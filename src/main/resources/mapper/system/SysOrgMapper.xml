@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microworld.vault.modules.system.mapper.SysOrgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microworld.vault.modules.system.entity.SysOrg">
+        <id column="oid" property="oid" />
+        <result column="enable" property="enable" />
+        <result column="name" property="name" />
+        <result column="name_short" property="nameShort" />
+        <result column="cods" property="cods" />
+        <result column="logo" property="logo" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="website" property="website" />
+        <result column="latitude" property="latitude" />
+        <result column="longitude" property="longitude" />
+        <result column="addr" property="addr" />
+        <result column="intro" property="intro" />
+        <result column="area_value" property="areaValue" />
+        <result column="area" property="area" />
+        <result column="type_value" property="typeValue" />
+        <result column="type" property="type" />
+        <result column="level_value" property="levelValue" />
+        <result column="level" property="level" />
+        <result column="is_ec" property="isEc" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="initial" property="initial" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        oid, enable, name, name_short, cods, logo, phone, email, website, latitude, longitude, addr, intro, area_value, area, type_value, type, level_value, level, is_ec, is_delete, create_by, create_time, update_by, update_time, initial
+    </sql>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microworld.vault.modules.dict.mapper.DictCityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microworld.vault.modules.dict.entity.DictCity">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="up_id" property="upId" />
+        <result column="abbreviation" property="abbreviation" />
+        <result column="level" property="level" />
+        <result column="city_code" property="cityCode" />
+        <result column="zip_code" property="zipCode" />
+        <result column="merger" property="merger" />
+        <result column="pinyin" property="pinyin" />
+        <result column="lng" property="lng" />
+        <result column="lat" property="lat" />
+        <result column="initial" property="initial" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, name, up_id, abbreviation, level, city_code, zip_code, merger, pinyin, lng, lat, initial
+    </sql>
+
+</mapper>

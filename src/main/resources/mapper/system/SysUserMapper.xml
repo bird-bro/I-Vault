@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microworld.vault.modules.system.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microworld.vault.modules.system.entity.SysUser">
+        <id column="uid" property="uid" />
+        <result column="enable" property="enable" />
+        <result column="account" property="account" />
+        <result column="password" property="password" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="name" property="name" />
+        <result column="head_icon" property="headIcon" />
+        <result column="gender" property="gender" />
+        <result column="id_no" property="idNo" />
+        <result column="birthday" property="birthday" />
+        <result column="birthplace" property="birthplace" />
+        <result column="address" property="address" />
+        <result column="signature" property="signature" />
+        <result column="school" property="school" />
+        <result column="major" property="major" />
+        <result column="title" property="title" />
+        <result column="title_value" property="titleValue" />
+        <result column="education" property="education" />
+        <result column="job" property="job" />
+        <result column="join_in" property="joinIn" />
+        <result column="speciality" property="speciality" />
+        <result column="intro" property="intro" />
+        <result column="initial" property="initial" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="in_time" property="inTime" />
+        <result column="in_no" property="inNo" />
+        <result column="in_ip" property="inIp" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        uid, enable, account, password, phone, email, name, head_icon, gender, id_no, birthday, birthplace, address, signature, school, major, title, title_value, education, job, join_in, speciality, intro, initial, is_delete, create_by, create_time, update_by, update_time, in_time, in_no, in_ip
+    </sql>
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microworld.vault.modules.dict.mapper.DictDataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microworld.vault.modules.dict.entity.DictData">
+        <id column="id" property="id" />
+        <result column="enable" property="enable" />
+        <result column="type_id" property="typeId" />
+        <result column="code" property="code" />
+        <result column="value" property="value" />
+        <result column="label" property="label" />
+        <result column="reserve" property="reserve" />
+        <result column="sort" property="sort" />
+        <result column="color" property="color" />
+        <result column="css" property="css" />
+        <result column="remark" property="remark" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="initial" property="initial" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, enable, type_id, code, value, label, reserve, sort, color, css, remark, is_delete, create_by, create_time, update_by, update_time, initial
+    </sql>
+
+
+    <select id="list" parameterType="integer" resultType="com.microworld.vault.modules.dict.response.DictDataResponse">
+        select
+               code,
+               value,
+               label,
+               reserve,
+               sort,
+               color,
+               css
+        from
+             dict_data
+        where
+              is_delete = 0
+          and
+              type_id = #{typeId}
+        order by sort asc;
+    </select>
+
+</mapper>
