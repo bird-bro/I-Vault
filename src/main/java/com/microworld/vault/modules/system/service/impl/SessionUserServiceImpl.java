@@ -3,10 +3,10 @@ package com.microworld.vault.modules.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird.common.entity.HttpRequestInfo;
-import com.microworld.vault.modules.system.entity.SysUser;
-import com.microworld.vault.modules.system.entity.UserSession;
-import com.microworld.vault.modules.system.mapper.UserSessionMapper;
-import com.microworld.vault.modules.system.service.IUserSessionService;
+import com.microworld.vault.modules.system.entity.SessionUser;
+import com.microworld.vault.modules.system.mapper.SessionUserMapper;
+import com.microworld.vault.modules.system.response.UserInfoResponse;
+import com.microworld.vault.modules.system.service.ISessionUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class UserSessionServiceImpl extends ServiceImpl<UserSessionMapper, UserSession> implements IUserSessionService {
+public class SessionUserServiceImpl extends ServiceImpl<SessionUserMapper, SessionUser> implements ISessionUserService {
 
 
     @Override
-    public Boolean create(SysUser user, HttpRequestInfo info) {
+    public Boolean create(UserInfoResponse user, HttpRequestInfo info) {
         if (ObjectUtils.isEmpty(user)) {
             return null;
         }
-        UserSession session = UserSession.builder()
+        SessionUser session = SessionUser.builder()
                 .uid(user.getUid())
                 .account(user.getAccount())
                 .build();
@@ -46,15 +46,15 @@ public class UserSessionServiceImpl extends ServiceImpl<UserSessionMapper, UserS
 
     @Override
     public Boolean remove(String account) {
-        LambdaUpdateWrapper<UserSession> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(UserSession::getAccount, account);
+        LambdaUpdateWrapper<SessionUser> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SessionUser::getAccount, account);
         return this.remove(wrapper);
     }
 
     @Override
     public Boolean remove(int uid) {
-        LambdaUpdateWrapper<UserSession> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(UserSession::getUid, uid);
+        LambdaUpdateWrapper<SessionUser> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SessionUser::getUid, uid);
         return this.remove(wrapper);
     }
 }

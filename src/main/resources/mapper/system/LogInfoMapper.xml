@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microworld.vault.modules.system.mapper.LogInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microworld.vault.modules.system.entity.LogInfo">
+        <id column="id" property="id" />
+        <result column="log_type" property="logType" />
+        <result column="log_value" property="logValue" />
+        <result column="log_desc" property="logDesc" />
+        <result column="log_record" property="logRecord" />
+        <result column="log_time" property="logTime" />
+        <result column="app" property="app" />
+        <result column="type" property="type" />
+        <result column="method" property="method" />
+        <result column="pack" property="pack" />
+        <result column="uid" property="uid" />
+        <result column="account" property="account" />
+        <result column="session" property="session" />
+        <result column="ip" property="ip" />
+        <result column="function" property="function" />
+        <result column="url" property="url" />
+        <result column="exception" property="exception" />
+        <result column="browser" property="browser" />
+        <result column="os" property="os" />
+        <result column="mobile" property="mobile" />
+        <result column="engine" property="engine" />
+        <result column="create_time" property="createTime" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, log_type, log_value, log_desc, log_record, log_time, app, type, method, pack, uid, account, session, ip, function, url, exception, browser, os, mobile, engine, create_time, is_delete
+    </sql>
+
+</mapper>

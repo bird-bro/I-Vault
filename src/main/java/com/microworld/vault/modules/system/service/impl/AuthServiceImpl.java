@@ -1,5 +1,8 @@
 package com.microworld.vault.modules.system.service.impl;
 
+import com.alibaba.fastjson2.JSON;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.bird.common.entity.CookieVariable;
 import com.bird.common.entity.HttpRequestInfo;
 import com.bird.common.exception.advice.BusinessException;
@@ -20,7 +23,7 @@ import com.microworld.vault.modules.system.request.SignUpRequest;
 import com.microworld.vault.modules.system.response.UserInfoResponse;
 import com.microworld.vault.modules.system.service.IAuthService;
 import com.microworld.vault.modules.system.service.ISysUserService;
-import com.microworld.vault.modules.system.service.IUserSessionService;
+import com.microworld.vault.modules.system.service.ISessionUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.time.Duration;
 
 /**
@@ -46,7 +50,6 @@ public class AuthServiceImpl implements IAuthService {
 
     @Value("${spring.profiles.active}")
     private String env;
-
     @Value("${auth.default.domain}")
     private String domain;
     @Value("${auth.default.header}")
@@ -56,16 +59,20 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${auth.session-timeout}")
     private Duration sessionTimeout;
 
+    private static int cookie_expire = 24 * 60 * 60;
+
+
 
     private final ISysUserService iUserService;
 
-    private final IUserSessionService iUserSessionService;
+    private final ISessionUserService iSessionUserService;
 
     private final ILogSignService iLogSignService;
 
     private final IAccessoryService iAccessoryService;
 
     private final RedisUtil redisUtil;
+
 
 
     @Override
@@ -79,6 +86,12 @@ public class AuthServiceImpl implements IAuthService {
         if(StringUtils.isBlank(user.getHeadIcon())){
             user.setHeadIcon(iAccessoryService.headIcon(StringUtils.substring(request.getName(),0,1)));
         }
+        try {
+            user.setPassword(AuthTool.aesPassword(request.getAccount(),request.getPassword()));
+        }catch (Exception e){
+            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0100,"sign up is fail ！（Password encryption failed）");
+        }
+
         if(iUserService.save(user)){
             return user.getUid();
         }else {
@@ -90,7 +103,7 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public UserInfoResponse signIn(SignInRequest sign, HttpServletRequest request, HttpServletResponse response) {
 
-        UserInfoResponse userInfoResponse = UserInfoResponse.builder().build();
+        UserInfoResponse userInfo = UserInfoResponse.builder().build();
 
         //获取账号信息
         SysUser user = iUserService.query(sign.getAccount());
@@ -99,35 +112,46 @@ public class AuthServiceImpl implements IAuthService {
          * 校验账号
          */
         if(ObjectUtils.isEmpty(user)){
+            //账户不存在
             throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0201, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
         }
-        if(!AuthTool.aesCheckPassword(sign.getAccount(), sign.getPassword(), user.getPassword(), redisUtil.get(Constants.RAS_PRIVATE_KEY))){
+        if(!AuthTool.aesCheckPassword(sign.getAccount(), sign.getPassword(), user.getPassword())){
+            //密码错误
             throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0210, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
         }
         if(user.getEnable().equals(EnableEnum.FALSE.getKey())){
+            //账号禁用
             throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0322, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
         }
 
-        /**
+        /*
          * 登录成功
-         */
-        ObjectTool.copyPropertiesIgnoreNull(user, userInfoResponse);
+         **/
+        ObjectTool.copyPropertiesIgnoreNull(user, userInfo);
 
-
-        //写 cookie
-
-        //写 redis
-
+        //写token
+        userInfo.setToken(getToken(userInfo.getAccount(), userInfo.getPassword()));
+        //写cookies
+        setCookie(userInfo, response);
+        //写redis
+        redisUtil.set(Constants.REDIS_USER_INFO+userInfo.getAccount(),userInfo,tokenTimeout.toMillis());
         //写db session
         HttpRequestInfo httpRequestInfo = HttpTool.getRequestInfo(request);
-        iUserSessionService.create(user, httpRequestInfo);
-        //获取权限
+        iSessionUserService.create(userInfo, httpRequestInfo);
 
-        //日志
-        iLogSignService.createIn(user.getUid(), httpRequestInfo);
+        /*
+        *获取权限
+        **/
+        //菜单权限
 
 
-        return userInfoResponse;
+
+        //写日志
+        iLogSignService.createIn(userInfo.getUid(), httpRequestInfo);
+        //更新登录记录
+        iUserService.renewSign(userInfo.getUid(), httpRequestInfo.getIp4(), userInfo.getInNo());
+
+        return userInfo;
     }
 
 
@@ -144,11 +168,51 @@ public class AuthServiceImpl implements IAuthService {
         //删 ridis
         redisUtil.delete(Constants.REDIS_USER_INFO + sign.getAccount());
         //删db session
-        iUserSessionService.remove(sign.getUid());
+        iSessionUserService.remove(sign.getUid());
         //日志
         HttpRequestInfo httpRequestInfo = HttpTool.getRequestInfo(request);
         iLogSignService.createOut(sign.getUid(), httpRequestInfo);
         return true;
+    }
+
+
+
+    /**
+     * new token
+     * @author:bird
+     **/
+    private String getToken(String code, String password){
+        String token = "";
+        token = JWT.create().withAudience(code).sign(Algorithm.HMAC256(password));
+        return token;
+    }
+
+    /**
+     * set cookie
+     * @author:bird
+     **/
+    private void setCookie(UserInfoResponse infoUserResponse, HttpServletResponse response){
+        String userInfo = "";
+        try {
+            userInfo = URLEncoder.encode(JSON.toJSONString(userInfo),"UTF-8");
+            //写cookie
+            String[] domainArr = domain.split(";");
+            for (int i = 0; i < domainArr.length; i++) {
+                Cookie cookie = new Cookie(header + "-" + env, infoUserResponse.getToken());
+                cookie.setMaxAge(cookie_expire);
+                cookie.setDomain(domainArr[i]);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                cookie = new Cookie("user_info-" + env, userInfo);
+                //cookie = new Cookie("USER-UID", String.valueOf(infoUserResponse.getUid()));
+                cookie.setMaxAge(cookie_expire);
+                cookie.setDomain(domainArr[i]);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+        }catch (Exception e){
+            log.error("-- cookie写入失败",e);
+        }
     }
 
 }

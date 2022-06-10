@@ -1,7 +1,7 @@
 package com.microworld.vault.modules.system.mapper;
 
+import com.microworld.vault.modules.system.entity.LogInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.microworld.vault.modules.system.entity.UserSession;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.microworld.vault.modules.system.entity.UserSession;
  * </p>
  *
  * @author birdBro
- * @since 2022-04-20
+ * @since 2022-06-10
  */
-public interface UserSessionMapper extends BaseMapper<UserSession> {
+public interface LogInfoMapper extends BaseMapper<LogInfo> {
 
 }

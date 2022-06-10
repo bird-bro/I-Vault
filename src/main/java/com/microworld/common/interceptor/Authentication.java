@@ -72,12 +72,12 @@ public class Authentication implements HandlerInterceptor {
         if(StringUtils.isBlank(redisInfo)){
             throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0230, "token invalid: "+account);
         }
-        UserInfoResponse userInfoResponse = JSONObject.parseObject(redisInfo, UserInfoResponse.class);
-        if(ObjectUtils.isEmpty(userInfoResponse)){
+        UserInfoResponse usInfo = JSONObject.parseObject(redisInfo, UserInfoResponse.class);
+        if(ObjectUtils.isEmpty(usInfo)){
             throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0600, "redis user info is null!");
         }
 
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(userInfoResponse.getPassword())).build();
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(usInfo.getPassword())).build();
 
         try {
             jwtVerifier.verify(token);

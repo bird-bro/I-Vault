@@ -39,6 +39,16 @@ public interface ISysUserService extends IService<SysUser> {
 
 
     /**
+     * 更新登录记录
+     * @author: bird
+     * @date: 2022-4-18 10:08
+     * @param: request
+     * @return: boolean
+     **/
+    Boolean renewSign(int uid, String ip, int no);
+
+
+    /**
      * 查询用户信息
      * @author: bird
      * @date: 2022-4-20 9:27

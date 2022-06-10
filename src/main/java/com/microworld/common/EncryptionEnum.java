@@ -17,10 +17,12 @@ public enum EncryptionEnum {
      *表示加密系数
      */
     HASHITERATIONS("2"),
+
     /**
      *表示加密所用盐值
      */
     SALT("pixel");
+
 
 
     private String value;

@@ -1,4 +1,4 @@
-package com.microworld.vault;
+package com.microworld;
 
 import com.bird.common.annotation.EnableGlobalException;
 import com.bird.common.exception.Disable;

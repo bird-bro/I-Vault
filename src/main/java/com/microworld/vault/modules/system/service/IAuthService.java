@@ -16,7 +16,7 @@ public interface IAuthService {
 
 
     /**
-    *
+    * 注册
     * @author: birdbro
     * @date: 2022-4-29 16:16
     * @param:

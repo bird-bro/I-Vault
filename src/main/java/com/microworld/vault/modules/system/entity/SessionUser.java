@@ -22,7 +22,7 @@ import java.util.Date;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UserSession extends Model<UserSession> {
+public class SessionUser extends Model<SessionUser> {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,7 +85,7 @@ public class UserSession extends Model<UserSession> {
      */
     private Boolean mobile;
 
-    @TableLogic
+
     @JsonIgnore
     @TableField(fill = FieldFill.INSERT)
     private Boolean isDelete;

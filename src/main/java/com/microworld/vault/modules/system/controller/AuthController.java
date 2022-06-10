@@ -1,12 +1,12 @@
 package com.microworld.vault.modules.system.controller;
 
 import cn.hutool.core.lang.Validator;
-import com.bird.common.annotation.Log;
 import com.bird.common.annotation.PassToken;
 import com.bird.common.entity.PublicKeyMap;
 import com.bird.common.exception.AssertException;
 import com.bird.common.redis.RedisUtil;
 import com.bird.common.tools.RsaTool;
+import com.bird.common.annotation.Log;
 import com.microworld.common.tools.AuthTool;
 import com.microworld.common.Constants;
 import com.microworld.vault.modules.system.request.SignInRequest;
@@ -77,7 +77,7 @@ public class AuthController {
     @ApiOperation(value = "注册用户")
     public Integer signUp(@Validated @RequestBody SignUpRequest request, BindingResult bindingResult){
         AssertException.validated(bindingResult);
-        return null;
+        return iAuthService.signUp(request);
     }
 
 

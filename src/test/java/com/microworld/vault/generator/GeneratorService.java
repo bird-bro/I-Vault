@@ -24,12 +24,12 @@ public class GeneratorService {
 
 
     //需要的表名，多个表名传数组
-    static String[] TABLE = {"dict_city"};
-    static String DBURL = "jdbc:mysql://rm-8vbe18d772cn401jdvo.mysql.zhangbei.rds.aliyuncs.com:3306/sys?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC";
+    static String[] TABLE = {"log_info"};
+    static String DBURL = "jdbc:mysql://rm-8vbe18d772cn401jdvo.mysql.zhangbei.rds.aliyuncs.com:3306/vault?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC";
     static String USERNAME = "visual_root";
     static String PASSWORD="visual@1026";
-    static String BASE_PACKAGE="com.microworld.vault.modules.dict";
-    static String PATH_PRO = "/src/main/resources/mapper/dict/";
+    static String BASE_PACKAGE="com.microworld.vault.modules.system";
+    static String PATH_PRO = "/src/main/resources/mapper/system/";
 
 
 //    @Test

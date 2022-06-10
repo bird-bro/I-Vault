@@ -1,6 +1,7 @@
 package com.microworld.vault.modules.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird.common.exception.advice.BusinessException;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * <p>
@@ -80,6 +82,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return this.updateById(user);
     }
 
+
+    @Override
+    public Boolean renewSign(int uid, String ip, int no) {
+
+        LambdaUpdateWrapper<SysUser> wrapper = new LambdaUpdateWrapper<>();
+        wrapper
+                .set(StringUtils.isNotBlank(ip), SysUser::getInIp, ip)
+                .set(SysUser::getInNo, no+1)
+                .set(SysUser::getInTime, new Date())
+                .eq(SysUser::getUid, uid);
+        return this.update(wrapper);
+    }
 
     @Override
     public SysUser query(String account) {

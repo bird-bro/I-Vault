@@ -73,27 +73,33 @@ public class DictCityServiceImpl extends ServiceImpl<DictCityMapper, DictCity> i
 
     @Override
     public String queryAddrByIp(String ip) {
-        if(!Validator.isIpv4(ip)){
-            return  null;
-        }
-        //判断是否为内网地址
-        if(NetUtil.isInnerIP(ip)){
-            return "Inner"+"(内网)";
-        }
-        String url =  urlIp + "key=" +key + "&type=4" + "&ip="+ip;
-        log.info("-- 调用高德API: " + url);
-        String json = HttpUtil.get(url);
-        if(StringUtils.isBlank(json)) {
+        try {
+            if(!Validator.isIpv4(ip)){
+                return  null;
+            }
+            //判断是否为内网地址
+            if(NetUtil.isInnerIP(ip)){
+                return "Inner"+"(内网)";
+            }
+            String url =  urlIp + "key=" +key + "&type=4" + "&ip="+ip;
+            log.info("-- 调用高德API: " + url);
+            String json = HttpUtil.get(url);
+            if(StringUtils.isBlank(json)) {
+                return null;
+            }
+            Map obj = JSONObject.parseObject(json, Map.class);
+            if (StringUtils.isBlank(obj.get("isp").toString())){
+                return null;
+            }
+            String address = String.format("%s-%s-%s",
+                    obj.get("province").toString(),
+                    obj.get("city").toString(),
+                    obj.get("district").toString());
+            return String.format("%s (%s)",address, obj.get("isp").toString());
+        }catch (Exception e){
+            log.error(e.getMessage());
             return null;
         }
-        Map obj = JSONObject.parseObject(json, Map.class);
-        if (StringUtils.isBlank(obj.get("isp").toString())){
-            return null;
-        }
-        String address = String.format("%s-%s-%s",
-                obj.get("province").toString(),
-                obj.get("city").toString(),
-                obj.get("district").toString());
-        return String.format("%s (%s)",address, obj.get("isp").toString());
+
     }
 }

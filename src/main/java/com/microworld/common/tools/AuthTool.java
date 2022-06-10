@@ -2,14 +2,18 @@ package com.microworld.common.tools;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
+import com.alibaba.fastjson2.JSON;
 import com.bird.common.tools.RsaTool;
 import com.bird.common.entity.PublicKeyMap;
 import com.microworld.common.EncryptionEnum;
+import com.microworld.vault.modules.system.response.UserInfoResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 
@@ -67,6 +71,21 @@ public class AuthTool {
         return getEncrypt(account, realPwd);
     }
 
+    /**
+     * 密码加密(加密写入数据库的密码)
+     * @param account 登录账号
+     * @param password 前端未加密的密码
+     * @return 后端加密的加密密码
+     * @throws Exception
+     */
+    public static String aesPassword(String account, String password) throws Exception{
+        if(StringUtils.isBlank(password)) {
+            return null;
+        }
+        //返回使用账号和原始密码进行后台加密的密码
+        return getEncrypt(account, password);
+    }
+
 
     /**
      * 校验密码
@@ -87,4 +106,22 @@ public class AuthTool {
         //校验加密密码与数据库从存储的密码是否相等
         return password_db.equals(password);
     }
+    /**
+     * 校验密码
+     * @param account 账号
+     * @param password 前端未加密码
+     * @param password_db 数据库中存储的密码
+     * @return boolean
+     */
+    public static boolean aesCheckPassword(String account, String password, String password_db){
+        //使用账号和原始密码进行后台加密的密码
+        password = getEncrypt(account, password);
+        //校验加密密码与数据库从存储的密码是否相等
+        return password_db.equals(password);
+    }
+
+
+
+
+
 }
