@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Base64;
@@ -50,7 +51,6 @@ public class AuthController {
     @PassToken
     @GetMapping("/keyPair")
     @ApiOperation(value = "获取公钥", notes = "get keyPair")
-
     public PublicKeyMap keyPair() throws Exception {
 
         PublicKeyMap publicKeyMap = new PublicKeyMap();

@@ -7,6 +7,7 @@ import com.microworld.vault.modules.system.response.UserInfoResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author bird

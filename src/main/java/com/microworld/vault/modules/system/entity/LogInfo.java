@@ -43,7 +43,7 @@ public class LogInfo extends Model<LogInfo> {
 
     private String pack;
 
-    private String uid;
+    private Integer uid;
 
     private String account;
 

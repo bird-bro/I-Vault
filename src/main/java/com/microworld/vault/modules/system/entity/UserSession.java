@@ -22,7 +22,7 @@ import java.util.Date;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SessionUser extends Model<SessionUser> {
+public class UserSession extends Model<UserSession> {
 
     private static final long serialVersionUID = 1L;
 

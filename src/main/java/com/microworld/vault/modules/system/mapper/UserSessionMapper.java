@@ -1,7 +1,7 @@
 package com.microworld.vault.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.microworld.vault.modules.system.entity.SessionUser;
+import com.microworld.vault.modules.system.entity.UserSession;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.microworld.vault.modules.system.entity.SessionUser;
  * @author birdBro
  * @since 2022-04-20
  */
-public interface SessionUserMapper extends BaseMapper<SessionUser> {
+public interface UserSessionMapper extends BaseMapper<UserSession> {
 
 }

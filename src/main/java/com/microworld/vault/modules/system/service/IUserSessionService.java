@@ -1,9 +1,9 @@
 package com.microworld.vault.modules.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.bird.common.entity.HttpRequestInfo;
-import com.microworld.vault.modules.system.entity.SessionUser;
-import com.microworld.vault.modules.system.response.UserInfoResponse;
+import com.microworld.vault.modules.system.entity.UserSession;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -13,10 +13,10 @@ import com.microworld.vault.modules.system.response.UserInfoResponse;
  * @author birdBro
  * @since 2022-04-19
  */
-public interface ISessionUserService extends IService<SessionUser> {
+public interface IUserSessionService extends IService<UserSession> {
 
 
-    Boolean create(UserInfoResponse user, HttpRequestInfo info);
+    Boolean create(HttpServletRequest request);
 
     /**
      * 删除session记录

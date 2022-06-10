@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.bird.common.entity.CookieVariable;
-import com.bird.common.entity.HttpRequestInfo;
 import com.bird.common.exception.advice.BusinessException;
 import com.bird.common.exception.enums.ErrorCodeEnum;
 import com.bird.common.redis.RedisUtil;
@@ -15,7 +14,6 @@ import com.microworld.common.tools.AuthTool;
 import com.microworld.common.Constants;
 import com.microworld.vault.enums.EnableEnum;
 import com.microworld.vault.modules.dict.service.IAccessoryService;
-import com.microworld.vault.modules.log.service.ILogSignService;
 import com.microworld.vault.modules.system.entity.SysUser;
 import com.microworld.vault.modules.system.request.SignInRequest;
 import com.microworld.vault.modules.system.request.SignOutRequest;
@@ -23,7 +21,7 @@ import com.microworld.vault.modules.system.request.SignUpRequest;
 import com.microworld.vault.modules.system.response.UserInfoResponse;
 import com.microworld.vault.modules.system.service.IAuthService;
 import com.microworld.vault.modules.system.service.ISysUserService;
-import com.microworld.vault.modules.system.service.ISessionUserService;
+import com.microworld.vault.modules.system.service.IUserSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -31,10 +29,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.time.Duration;
 
@@ -65,9 +66,7 @@ public class AuthServiceImpl implements IAuthService {
 
     private final ISysUserService iUserService;
 
-    private final ISessionUserService iSessionUserService;
-
-    private final ILogSignService iLogSignService;
+    private final IUserSessionService iUserSessionService;
 
     private final IAccessoryService iAccessoryService;
 
@@ -135,9 +134,13 @@ public class AuthServiceImpl implements IAuthService {
         setCookie(userInfo, response);
         //写redis
         redisUtil.set(Constants.REDIS_USER_INFO+userInfo.getAccount(),userInfo,tokenTimeout.toMillis());
-        //写db session
-        HttpRequestInfo httpRequestInfo = HttpTool.getRequestInfo(request);
-        iSessionUserService.create(userInfo, httpRequestInfo);
+        //写session
+        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        session.setAttribute("uid",user.getUid());
+        //写session db
+        iUserSessionService.create(request);
+        //更新登录记录
+        iUserService.renewSign(userInfo.getUid(), HttpTool.getIp4(request), userInfo.getInNo());
 
         /*
         *获取权限
@@ -146,10 +149,6 @@ public class AuthServiceImpl implements IAuthService {
 
 
 
-        //写日志
-        iLogSignService.createIn(userInfo.getUid(), httpRequestInfo);
-        //更新登录记录
-        iUserService.renewSign(userInfo.getUid(), httpRequestInfo.getIp4(), userInfo.getInNo());
 
         return userInfo;
     }
@@ -168,10 +167,8 @@ public class AuthServiceImpl implements IAuthService {
         //删 ridis
         redisUtil.delete(Constants.REDIS_USER_INFO + sign.getAccount());
         //删db session
-        iSessionUserService.remove(sign.getUid());
-        //日志
-        HttpRequestInfo httpRequestInfo = HttpTool.getRequestInfo(request);
-        iLogSignService.createOut(sign.getUid(), httpRequestInfo);
+        iUserSessionService.remove(sign.getUid());
+
         return true;
     }
 
