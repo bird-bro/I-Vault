@@ -89,6 +89,7 @@ public class SysUserController {
         return iUserService.existByAccount(account);
     }
 
+
     @GetMapping("/exist/phone/{phone}")
     @ApiOperation(value = "判断手机号是否已存在")
     @ApiImplicitParam(name = "phone", value = "手机号", dataTypeClass = String.class, paramType = "path", required = true)
@@ -96,12 +97,14 @@ public class SysUserController {
         return iUserService.existByPhone(phone);
     }
 
+
     @GetMapping("/exist/email/{email}")
     @ApiOperation(value = "判断邮箱是否已存在")
     @ApiImplicitParam(name = "email", value = "邮箱", dataTypeClass = String.class, paramType = "path", required = true)
     public Boolean existByEmail(@PathVariable(value = "email") String email) {
         return iUserService.existByEmail(email);
     }
+
 
     @GetMapping("/exist/idno/{idNo}")
     @ApiOperation(value = "判断身份证号是否已存在")

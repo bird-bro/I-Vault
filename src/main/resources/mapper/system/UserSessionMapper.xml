@@ -17,13 +17,12 @@
         <result column="mobile" property="mobile" />
         <result column="is_delete" property="isDelete" />
         <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
         <result column="engine" property="engine" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, uid, account, time_in, time_out, ip, session, browser, os, online_im, mobile, is_delete, create_time, update_time, engine
+        id, uid, account, time_in, time_out, ip, session, browser, os, online_im, mobile, is_delete, create_time, engine
     </sql>
 
 </mapper>

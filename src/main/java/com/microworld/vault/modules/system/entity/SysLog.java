@@ -1,12 +1,16 @@
 package com.microworld.vault.modules.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>
@@ -16,9 +20,11 @@ import lombok.EqualsAndHashCode;
  * @author birdBro
  * @since 2022-06-10
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LogInfo extends Model<LogInfo> {
+public class SysLog extends Model<SysLog> {
 
     private static final long serialVersionUID = 1L;
 
@@ -83,5 +89,8 @@ public class LogInfo extends Model<LogInfo> {
     protected Serializable pkVal() {
         return this.id;
     }
+
+    @TableField(exist = false)
+    private Boolean sign;
 
 }

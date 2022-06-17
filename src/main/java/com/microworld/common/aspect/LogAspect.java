@@ -3,14 +3,11 @@ package com.microworld.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import com.bird.common.annotation.Log;
 import com.bird.common.aspect.LogHandle;
-import com.bird.common.enums.HeaderEnum;
 import com.bird.common.tools.HttpTool;
 import com.bird.common.entity.HttpRequestInfo;
-import com.microworld.common.Constants;
-import com.microworld.vault.modules.system.entity.LogInfo;
+import com.microworld.vault.modules.system.entity.SysLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -38,12 +35,12 @@ public class LogAspect {
     private String app;
 
 
-    private ThreadLocal<Long> startTimeThreadLocal=new ThreadLocal<>();
-    private ThreadLocal<LogInfo> logBasicsThreadLocal=new ThreadLocal<>();
+    //private ThreadLocal<Long> startTimeThreadLocal=new ThreadLocal<>();
+    private ThreadLocal<SysLog> logBasicsThreadLocal=new ThreadLocal<>();
 
 
     @Autowired
-    private LogHandle<LogInfo> logHandle;
+    private LogHandle<SysLog> logHandle;
 
     @Pointcut("@annotation(com.bird.common.annotation.Log)")
     public void start(){
@@ -57,20 +54,10 @@ public class LogAspect {
         ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttr.getRequest();
 
-        LogInfo logInfo = new LogInfo();
+        SysLog logInfo = new SysLog();
         logInfo.setApp(app);
-        logInfo.setSession(requestAttr.getSessionId());
         logInfo.setUrl(request.getRequestURI().toString());
         logInfo.setMethod(request.getMethod());
-        logInfo.setUid(ObjectUtils.isEmpty(request.getSession().getAttribute("uid"))? 0 : Integer.parseInt(request.getSession().getAttribute("uid").toString()));
-        HttpRequestInfo info = HttpTool.getRequestInfo(request);
-        if(ObjectUtils.isNotEmpty(info)){
-            logInfo.setBrowser(info.getBrowser());
-            logInfo.setIp(info.getIp4());
-            logInfo.setOs(info.getOs());
-            logInfo.setMobile(info.getMobile());
-            logInfo.setEngine(info.getEngine());
-        }
 
         // 从切面织入点处通过反射机制获取织入点处的方法
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -85,8 +72,19 @@ public class LogAspect {
         logInfo.setLogType(logMsg.type());
         logInfo.setLogValue(logMsg.value());
         logInfo.setLogTime(DateUtil.now());
+        logInfo.setSign(logMsg.sign());
+        //记录请求源
+        if(logMsg.record()){
+            HttpRequestInfo info = HttpTool.getRequestInfo(request);
+            if(ObjectUtils.isNotEmpty(info)){
+                logInfo.setBrowser(info.getBrowser());
+                logInfo.setIp(info.getIp4());
+                logInfo.setOs(info.getOs());
+                logInfo.setMobile(info.getMobile());
+                logInfo.setEngine(info.getEngine());
+            }
+        }
 
-        startTimeThreadLocal.set(System.currentTimeMillis());
         //将日志对象存储到ThreadLocal对象下，方便对象传递
         logBasicsThreadLocal.set(logInfo);
     }
@@ -97,9 +95,10 @@ public class LogAspect {
     public void afterReturning(Object object) {
 
         if (logBasicsThreadLocal.get()!= null) {
-            LogInfo logInfo =logBasicsThreadLocal.get();
+            SysLog logInfo =logBasicsThreadLocal.get();
             HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
-            logInfo.setUid(ObjectUtils.isEmpty(session.getAttribute("uid")) ? 0 : Integer.parseInt(session.getAttribute("uid").toString()));
+            logInfo.setSession(session.getId());
+            logInfo.setAccount(ObjectUtils.isEmpty(session.getAttribute("account")) ? "" : session.getAttribute("account").toString());
             try {
                 logInfo.setType("INFO");
                 logHandle.persistenceLog(logInfo);
@@ -107,16 +106,17 @@ public class LogAspect {
                 log.error(e.toString());
             }
         }
-        startTimeThreadLocal.remove();
         logBasicsThreadLocal.remove();
     }
-
 
 
     @AfterThrowing(pointcut = "start()",throwing = "throwable")
     public void afterThrowing(Throwable throwable) {
         if (logBasicsThreadLocal.get()!= null) {
-            LogInfo logInfo =logBasicsThreadLocal.get();
+            SysLog logInfo =logBasicsThreadLocal.get();
+            HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+            logInfo.setSession(session.getId());
+            logInfo.setAccount(ObjectUtils.isEmpty(session.getAttribute("account")) ? "" : session.getAttribute("account").toString());
             logInfo.setException(throwable.getClass().getName());
                 try {
                     logInfo.setType("ERROR");
@@ -124,8 +124,6 @@ public class LogAspect {
                 }catch (Exception e){
                     log.error(e.toString());
                 }
-
-            startTimeThreadLocal.remove();
             logBasicsThreadLocal.remove();
         }
     }

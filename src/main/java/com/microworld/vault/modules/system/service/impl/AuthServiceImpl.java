@@ -66,9 +66,9 @@ public class AuthServiceImpl implements IAuthService {
 
     private final ISysUserService iUserService;
 
-    private final IUserSessionService iUserSessionService;
-
     private final IAccessoryService iAccessoryService;
+
+    private final IUserSessionService iUserSessionService;
 
     private final RedisUtil redisUtil;
 
@@ -136,9 +136,8 @@ public class AuthServiceImpl implements IAuthService {
         redisUtil.set(Constants.REDIS_USER_INFO+userInfo.getAccount(),userInfo,tokenTimeout.toMillis());
         //写session
         HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
-        session.setAttribute("uid",user.getUid());
-        //写session db
-        iUserSessionService.create(request);
+        session.setAttribute("account",user.getAccount());
+
         //更新登录记录
         iUserService.renewSign(userInfo.getUid(), HttpTool.getIp4(request), userInfo.getInNo());
 
@@ -149,25 +148,16 @@ public class AuthServiceImpl implements IAuthService {
 
 
 
-
         return userInfo;
     }
 
 
     @Override
-    public Boolean signOut(SignOutRequest sign, HttpServletRequest request, HttpServletResponse response) {
-        CookieVariable variable = new CookieVariable();
-        variable.setDomain(domain);
-        variable.setHeader(header);
-        variable.setEnv(env);
-
-        Cookie[] cookies = request.getCookies();
-        HttpTool.removeCookie(cookies, response, variable);
-
+    public Boolean signOut(String account) {
         //删 ridis
-        redisUtil.delete(Constants.REDIS_USER_INFO + sign.getAccount());
+        redisUtil.delete(Constants.REDIS_USER_INFO + account);
         //删db session
-        iUserSessionService.remove(sign.getUid());
+        iUserSessionService.remove(account);
 
         return true;
     }

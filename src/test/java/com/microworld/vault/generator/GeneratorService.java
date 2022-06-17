@@ -24,7 +24,7 @@ public class GeneratorService {
 
 
     //需要的表名，多个表名传数组
-    static String[] TABLE = {"log_info"};
+    static String[] TABLE = {"user_session"};
     static String DBURL = "jdbc:mysql://rm-8vbe18d772cn401jdvo.mysql.zhangbei.rds.aliyuncs.com:3306/vault?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC";
     static String USERNAME = "visual_root";
     static String PASSWORD="visual@1026";

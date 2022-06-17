@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author birdBro
- * @since 2022-06-10
+ * @since 2022-06-13
  */
 @RestController
-@RequestMapping("/logInfo")
-public class LogInfoController {
+@RequestMapping("/userSession")
+public class UserSessionController {
 
 }
 

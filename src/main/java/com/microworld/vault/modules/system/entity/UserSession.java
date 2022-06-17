@@ -1,15 +1,14 @@
 package com.microworld.vault.modules.system.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * <p>
@@ -17,8 +16,9 @@ import java.util.Date;
  * </p>
  *
  * @author birdBro
- * @since 2022-04-20
+ * @since 2022-06-13
  */
+
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -38,7 +38,6 @@ public class UserSession extends Model<UserSession> {
      * 账号
      */
     private String account;
-
 
     /**
      * 登录时间
@@ -71,11 +70,6 @@ public class UserSession extends Model<UserSession> {
     private String os;
 
     /**
-     * 引擎
-     */
-    private String engine;
-
-    /**
      * 通讯状态
      */
     private Integer onlineIm;
@@ -85,18 +79,11 @@ public class UserSession extends Model<UserSession> {
      */
     private Boolean mobile;
 
-
-    @JsonIgnore
-    @TableField(fill = FieldFill.INSERT)
     private Boolean isDelete;
 
-    @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    @TableField(fill = FieldFill.UPDATE)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Integer updateTime;
+    private String engine;
 
 
     @Override

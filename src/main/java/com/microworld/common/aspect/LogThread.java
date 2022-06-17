@@ -1,7 +1,7 @@
 package com.microworld.common.aspect;
 
-import com.microworld.vault.modules.system.entity.LogInfo;
-import com.microworld.vault.modules.system.service.ILogInfoService;
+import com.microworld.vault.modules.system.entity.SysLog;
+import com.microworld.vault.modules.system.service.ISysLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -12,12 +12,12 @@ import org.apache.commons.lang3.ObjectUtils;
 @Slf4j
 public class LogThread implements Runnable {
 
-    private volatile ILogInfoService iLogInfoService;
+    private volatile ISysLogService iLogInfoService;
 
-    private volatile LogInfo logInfo;
+    private volatile SysLog logInfo;
 
 
-    public LogThread(ILogInfoService iLogInfoService, LogInfo logInfo){
+    public LogThread(ISysLogService iLogInfoService, SysLog logInfo){
         this.iLogInfoService = iLogInfoService;
         this.logInfo = logInfo;
     }
@@ -27,7 +27,7 @@ public class LogThread implements Runnable {
         try {
             log.debug("-- aspect log run ");
             if(ObjectUtils.isNotEmpty(logInfo)) {
-                this.iLogInfoService.save(logInfo);
+                this.iLogInfoService.create(logInfo);
             }
         }catch (Exception e){
             log.warn("-- aspect log run ERROR: "+e.getMessage());

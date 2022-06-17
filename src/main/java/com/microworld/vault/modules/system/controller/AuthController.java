@@ -72,7 +72,7 @@ public class AuthController {
 
 
     @PassToken
-    @Log(value = "注册用户", type = "POST")
+    @Log(value = "注册用户", type = "POST", record = true)
     @PostMapping("/sign/up")
     @ApiOperation(value = "注册用户")
     public Integer signUp(@Validated @RequestBody SignUpRequest request, BindingResult bindingResult){
@@ -82,7 +82,7 @@ public class AuthController {
 
 
     @PassToken
-    @Log(value = "登录", type = "POST")
+    @Log(value = "登录", type = "POST", record = true, sign = true)
     @PostMapping("/sign/in")
     @ApiOperation(value = "登录")
     public UserInfoResponse signIn(@Validated @RequestBody SignInRequest sign, HttpServletRequest request, HttpServletResponse response){
@@ -90,18 +90,19 @@ public class AuthController {
     }
 
 
-    @Log(value = "登出", type = "POST")
-    @PostMapping("/sign/out")
+    @Log(value = "登出", type = "POST", record = true)
+    @GetMapping("/sign/out/{account}")
     @ApiOperation(value = "登出")
-    public Boolean signOut(@Validated @RequestBody SignOutRequest sign, HttpServletRequest request, HttpServletResponse response){
-        return iAuthService.signOut(sign, request, response);
+    @ApiImplicitParam(name = "account", value = "账号", dataTypeClass = String.class, paramType = "path", required = true)
+    public Boolean signOut(@PathVariable(value = "account") String account){
+        return iAuthService.signOut(account);
     }
 
 
     @GetMapping("/check/phone/{phone}")
     @ApiOperation(value = "校验手机号格式")
     @ApiImplicitParam(name = "phone", value = "手机号", dataTypeClass = Integer.class, paramType = "path", required = true)
-    public boolean isPhone(String phone){
+    public boolean isPhone(@PathVariable(value = "phone") String phone){
         return Validator.isMobile(phone);
     }
 
@@ -109,7 +110,7 @@ public class AuthController {
     @GetMapping("/check/email/{email}")
     @ApiOperation(value = "校验邮箱格式")
     @ApiImplicitParam(name = "email", value = "邮箱", dataTypeClass = Integer.class, paramType = "path", required = true)
-    public boolean isEmail(String email){
+    public boolean isEmail(@PathVariable(value = "email") String email){
         return Validator.isEmail(email);
     }
 
@@ -117,7 +118,7 @@ public class AuthController {
     @GetMapping("/check/birthday/{birthday}")
     @ApiOperation(value = "校验生日格式")
     @ApiImplicitParam(name = "birthday", value = "生日", dataTypeClass = Integer.class, paramType = "path", required = true)
-    public boolean isBirthday(String birthday){
+    public boolean isBirthday(@PathVariable(value = "birthday") String birthday){
         return Validator.isBirthday(birthday);
     }
 

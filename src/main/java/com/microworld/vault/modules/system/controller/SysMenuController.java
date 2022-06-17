@@ -73,7 +73,6 @@ public class SysMenuController {
     }
 
 
-    @Log(value = "查询菜单", type = "POST")
     @PostMapping("/list")
     @ApiOperation(value = "查询菜单-list")
     public List<SysMenu> queryList(@RequestBody MenuListRequest request){

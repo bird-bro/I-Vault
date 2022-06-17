@@ -43,7 +43,7 @@ public interface IAuthService {
      * @param:
      * @return:
      **/
-    Boolean signOut (SignOutRequest sign, HttpServletRequest request, HttpServletResponse response);
+    Boolean signOut (String account);
 
 
 }
