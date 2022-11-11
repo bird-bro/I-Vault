@@ -36,7 +36,12 @@ public class AccessoryServiceImpl implements IAccessoryService {
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            return PictureTool.headIcon(value, headPhoto + directory, IdUtil.simpleUUID(), folder, headPhoto);
+            return PictureTool.headIcon(
+                    value, headPhoto + directory,
+                    IdUtil.simpleUUID(),
+                    folder,
+                    headPhoto
+            );
         }catch (IOException e){
             log.error("头像生成失败！",e.getMessage());
             return "";

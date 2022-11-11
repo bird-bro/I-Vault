@@ -1,4 +1,4 @@
-package com.microworld.common.aspect;
+package com.microworld.common.logaop;
 
 import com.bird.common.aspect.AbstractLogHandle;
 import com.microworld.vault.modules.system.entity.SysLog;

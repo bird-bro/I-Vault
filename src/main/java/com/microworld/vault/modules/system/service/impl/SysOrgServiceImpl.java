@@ -3,7 +3,7 @@ package com.microworld.vault.modules.system.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird.common.exception.advice.BusinessException;
-import com.bird.common.exception.enums.ErrorCodeEnum;
+import com.bird.common.exception.enums.BusinessEnum;
 import com.bird.common.tools.CharsTool;
 import com.bird.common.tools.ObjectTool;
 import com.microworld.vault.enums.EnableEnum;
@@ -47,7 +47,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         if(this.save(org)){
             return org.getOid();
         }else {
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0100,"create org is fail ！");
+            throw new BusinessException(BusinessEnum.ERROR_A0100,"create org is fail ！");
         }
     }
 

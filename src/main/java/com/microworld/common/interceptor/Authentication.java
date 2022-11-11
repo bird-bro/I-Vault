@@ -7,7 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bird.common.annotation.PassToken;
 import com.bird.common.exception.advice.BusinessException;
-import com.bird.common.exception.enums.ErrorCodeEnum;
+import com.bird.common.exception.enums.BusinessEnum;
 import com.bird.common.redis.RedisUtil;
 import com.bird.common.tools.HttpTool;
 import com.microworld.common.Constants;
@@ -70,11 +70,11 @@ public class Authentication implements HandlerInterceptor {
 
         //token失效
         if(StringUtils.isBlank(redisInfo)){
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0230, "token invalid: "+account);
+            throw new BusinessException(BusinessEnum.ERROR_A0230, "token invalid: "+account);
         }
         UserInfoResponse usInfo = JSONObject.parseObject(redisInfo, UserInfoResponse.class);
         if(ObjectUtils.isEmpty(usInfo)){
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0600, "redis user info is null!");
+            throw new BusinessException(BusinessEnum.ERROR_A0600, "redis user info is null!");
         }
 
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(usInfo.getPassword())).build();
@@ -82,7 +82,7 @@ public class Authentication implements HandlerInterceptor {
         try {
             jwtVerifier.verify(token);
         }catch (JWTVerificationException e){
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0320, "token check fail！");
+            throw new BusinessException(BusinessEnum.ERROR_A0320, "token check fail！");
         }
         return true;
 

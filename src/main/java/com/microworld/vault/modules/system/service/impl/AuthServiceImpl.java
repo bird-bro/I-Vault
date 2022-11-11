@@ -5,7 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.bird.common.entity.CookieVariable;
 import com.bird.common.exception.advice.BusinessException;
-import com.bird.common.exception.enums.ErrorCodeEnum;
+import com.bird.common.exception.enums.BusinessEnum;
 import com.bird.common.redis.RedisUtil;
 import com.bird.common.tools.CharsTool;
 import com.bird.common.tools.HttpTool;
@@ -88,13 +88,13 @@ public class AuthServiceImpl implements IAuthService {
         try {
             user.setPassword(AuthTool.aesPassword(request.getAccount(),request.getPassword()));
         }catch (Exception e){
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0100,"sign up is fail ！（Password encryption failed）");
+            throw new BusinessException(BusinessEnum.ERROR_A0100,"sign up is fail ！（Password encryption failed）");
         }
 
         if(iUserService.save(user)){
             return user.getUid();
         }else {
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0100,"sign up is fail ！");
+            throw new BusinessException(BusinessEnum.ERROR_A0100,"sign up is fail ！");
         }
     }
 
@@ -112,15 +112,15 @@ public class AuthServiceImpl implements IAuthService {
          */
         if(ObjectUtils.isEmpty(user)){
             //账户不存在
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0201, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
+            throw new BusinessException(BusinessEnum.ERROR_A0201, BusinessEnum.ERROR_A0200.getMsg());
         }
         if(!AuthTool.aesCheckPassword(sign.getAccount(), sign.getPassword(), user.getPassword())){
             //密码错误
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0210, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
+            throw new BusinessException(BusinessEnum.ERROR_A0210, BusinessEnum.ERROR_A0200.getMsg());
         }
         if(user.getEnable().equals(EnableEnum.FALSE.getKey())){
             //账号禁用
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0322, ErrorCodeEnum.BUSINESS_ERROR_A0200.getMsg());
+            throw new BusinessException(BusinessEnum.ERROR_A0322, BusinessEnum.ERROR_A0200.getMsg());
         }
 
         /*

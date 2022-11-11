@@ -1,4 +1,4 @@
-package com.microworld.common.aspect;
+package com.microworld.common.logaop;
 
 import cn.hutool.core.date.DateUtil;
 import com.bird.common.annotation.Log;
@@ -127,14 +127,6 @@ public class LogAspect {
             logBasicsThreadLocal.remove();
         }
     }
-
-
-
-
-
-
-
-
 
 
 

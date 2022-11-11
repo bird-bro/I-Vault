@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird.common.exception.advice.BusinessException;
-import com.bird.common.exception.enums.ErrorCodeEnum;
+import com.bird.common.exception.enums.BusinessEnum;
 import com.bird.common.tools.CharsTool;
 import com.bird.common.tools.ObjectTool;
 import com.microworld.common.Constants;
@@ -70,7 +70,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if(this.save(user)){
             return user.getUid();
         }else {
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_A0100,"create user is fail ！");
+            throw new BusinessException(BusinessEnum.ERROR_A0100,"create user is fail ！");
         }
     }
 

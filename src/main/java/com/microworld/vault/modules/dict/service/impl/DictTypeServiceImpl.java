@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird.common.exception.advice.BusinessException;
-import com.bird.common.exception.enums.ErrorCodeEnum;
+import com.bird.common.exception.enums.BusinessEnum;
 import com.bird.common.tools.CharsTool;
 import com.bird.common.tools.ObjectTool;
 import com.microworld.vault.modules.dict.entity.DictType;
@@ -43,7 +43,7 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
         if(this.save(dictType)){
             return dictType.getId();
         }else {
-            throw new BusinessException(ErrorCodeEnum.BUSINESS_ERROR_B0001,"create dict type is fail ！");
+            throw new BusinessException(BusinessEnum.ERROR_B0001,"create dict type is fail ！");
         }
     }
 
